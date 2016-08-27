@@ -7,6 +7,8 @@ as static HTML pages.
 
 Usage
 -----
+**Doesn't work yet.** This repo contains a "work in progress" preview.
+
 ```bash
 $ ./upd.sh && firefox static/index.html
 ```
