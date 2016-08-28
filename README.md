@@ -1,5 +1,5 @@
 ﻿
-jquery-api-docs-static
+jqapi-docs-static
 ======================
 A tool to render the [jQuery API doc entries][api-repo-entries]
 as static HTML pages.

@@ -11,7 +11,7 @@
     s~^([^\t]*)(§c[^\t]*\n\t.*)\t(type)="(method|$\
       )"~\1 doc-\4-entry\2~
     s~^(<[^\t<>]*)(>[^\t]*\n\t.*)\t(name)="([a-zA-Z.]+|$\
-      )"~\1 id="\a!<dashify>\n\4\n"\2~
+      )"~\a!def-ent funcName=\4\n\1 id="\a!<dashify>\n\4\n"\2~
     s~(\n *</header>[^\t]*\n\t.*)\t(return)="([A-Za-z]+|$\
       )"~\n    <p class="doc-\2-value">\3</p>\1~
     s~§[ch]~~g
@@ -20,4 +20,4 @@
   }
 }}
 
-${/^‹\/entry›$/d}
+$s~^‹\/entry›$~</chapter><!--/.doc-entry-->~

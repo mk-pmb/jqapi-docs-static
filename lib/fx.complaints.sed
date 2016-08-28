@@ -5,4 +5,7 @@
 $!{N;b read_all}
 
 s~‹~\a@<complain:unparsed> &~g
-s~\s*\a~\n\n!! ~g
+: space_bell_to_middot
+  s~ ( *\a)~·\1~g
+t space_bell_to_middot
+s~\s*((·)*)\a(@<([^<>]+)>|)~\n\n!! @\4\1~g

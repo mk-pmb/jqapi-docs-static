@@ -25,5 +25,5 @@
   t desc_easy_tags
 
   s~\a~&@<revive:desc> ~g
-  /\a/!d
+  # /\a/!d
 }
