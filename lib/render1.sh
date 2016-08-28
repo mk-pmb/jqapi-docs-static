@@ -28,25 +28,30 @@ function render_mode_detect () {
 
 function render_one_entry () {
   [ "$#" == 0 ] && tty --silent && echo 'I: start reading XML from stdin.'
-  csed -urf xml.pre-chunk.sed -- "$@" \
-    | csed -urf xml.entry-head.sed \
-    | csed -urf xml.signature.parse.sed | fx_rebuffer \
-    | csed -urf xml.revive_verbatim_html.sed \
+  csed - xml.pre-chunk.sed -- "$@" \
+    | csed - xml.entry-head.sed \
+    | csed - xml.signature.parse.sed | fx_rebuffer \
+    | csed - xml.revive_verbatim_html.sed \
     \
-    | csed -urf fx.hyphenize.sed \
-    | csed -urf fx.skip-eol.sed \
+    | csed - fx.hyphenize.sed \
+    | csed - fx.skip-eol.sed \
     | fx_def_ent \
     \
-    | csed -urf fx.complaints.sed
+    | csed - fx.complaints.sed
   return 0
 }
 
 
 function csed () {
-  case "$1" in
+  local SED_OPTS="$1"; shift
+  local SED_FN="$1"; shift
+  local SED_CMD=( sed "$SED_OPTS" "$SELFPATH/$SED_FN" "$@" )
+  case "$SED_OPTS" in
     =* ) cat; return $?;;
+    - ) SED_CMD=( "${SED_CMD[@]:2}" );;
   esac
-  LANG=C LANGUAGE=C sed "$@"
+  # echo "S: ${SED_CMD[*]}" >&2
+  LANG=C LANGUAGE=C "${SED_CMD[@]}"
   return $?
 }
 
