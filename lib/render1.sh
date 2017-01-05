@@ -30,7 +30,9 @@ function render_one_entry () {
   [ "$#" == 0 ] && tty --silent && echo 'I: start reading XML from stdin.'
   csed - xml.pre-chunk.sed -- "$@" \
     | csed - xml.entry-head.sed \
-    | csed - xml.signature.parse.sed | fx_rebuffer \
+    | csed - xml.signature.argprops.sed \
+    | csed - xml.signature.parse.sed \
+    | csed =- xml.signature.hoist-func-arg.sed | csed =fx_rebuffer \
     | csed - xml.revive_verbatim_html.sed \
     \
     | csed - fx.hyphenize.sed \
@@ -44,8 +46,14 @@ function render_one_entry () {
 
 function csed () {
   local SED_OPTS="$1"; shift
-  local SED_FN="$1"; shift
-  local SED_CMD=( sed "$SED_OPTS" "$SELFPATH/$SED_FN" "$@" )
+  local SED_FN="$SELFPATH/$1"; shift
+  local ABS_PWD="$(readlink -m .)"
+  [ -n "$ABS_PWD" ] || ABS_PWD="$PWD"
+  case "$SED_FN" in
+    "$PWD"/* ) SED_FN="./${SED_FN#$PWD/}";;
+    "$ABS_PWD"/* ) SED_FN="./${SED_FN#$ABS_PWD/}";;
+  esac
+  local SED_CMD=( sed "$SED_OPTS" "$SED_FN" "$@" )
   case "$SED_OPTS" in
     =* ) cat; return $?;;
     - ) SED_CMD=( "${SED_CMD[@]:2}" );;
